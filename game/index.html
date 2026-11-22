@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember Court — a card duel of wits</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="app">
+  <header id="topbar">
+    <div class="court-name">EMBER COURT</div>
+    <div class="court-sub">a card duel of wits</div>
+    <button id="sound-toggle" type="button" title="Sound on/off">♪</button>
+  </header>
+
+  <!-- Rival side -->
+  <section id="rival-zone" aria-label="Rival">
+    <div class="side-info">
+      <div class="portrait rival-portrait" title="Duchess Vex">V</div>
+      <div class="side-text">
+        <div class="side-name">Duchess Vex <span class="side-tag">the Rival Court</span></div>
+        <div class="side-stats">
+          <span class="stat influence">Influence <b id="rival-hp">20</b></span>
+          <span class="stat mana">Embers <b id="rival-mana">3</b></span>
+          <span class="stat deck">Deck <b id="rival-deck">19</b></span>
+        </div>
+      </div>
+      <div id="rival-hand" class="mini-hand" aria-label="Rival hand"></div>
+    </div>
+    <div id="rival-intent" class="intent" aria-live="polite"></div>
+  </section>
+
+  <!-- The three lanes -->
+  <main id="table" aria-label="Duel table">
+    <div class="lane" data-lane="ember">
+      <div class="lane-head lane-ember">
+        <span class="lane-glyph" data-glyph="ember"></span>
+        <span class="lane-name">Ember Lane</span>
+        <span class="lane-total"><span class="lane-you" id="lane-you-ember">0</span> : <span class="lane-foe" id="lane-foe-ember">0</span></span>
+      </div>
+      <div class="lane-body">
+        <div class="lane-side foe-side" id="lane-foe-cards-ember"></div>
+        <div class="lane-divider"></div>
+        <div class="lane-side you-side" id="lane-you-cards-ember"></div>
+      </div>
+    </div>
+    <div class="lane" data-lane="tide">
+      <div class="lane-head lane-tide">
+        <span class="lane-glyph" data-glyph="tide"></span>
+        <span class="lane-name">Tide Lane</span>
+        <span class="lane-total"><span class="lane-you" id="lane-you-tide">0</span> : <span class="lane-foe" id="lane-foe-tide">0</span></span>
+      </div>
+      <div class="lane-body">
+        <div class="lane-side foe-side" id="lane-foe-cards-tide"></div>
+        <div class="lane-divider"></div>
+        <div class="lane-side you-side" id="lane-you-cards-tide"></div>
+      </div>
+    </div>
+    <div class="lane" data-lane="gale">
+      <div class="lane-head lane-gale">
+        <span class="lane-glyph" data-glyph="gale"></span>
+        <span class="lane-name">Gale Lane</span>
+        <span class="lane-total"><span class="lane-you" id="lane-you-gale">0</span> : <span class="lane-foe" id="lane-foe-gale">0</span></span>
+      </div>
+      <div class="lane-body">
+        <div class="lane-side foe-side" id="lane-foe-cards-gale"></div>
+        <div class="lane-divider"></div>
+        <div class="lane-side you-side" id="lane-you-cards-gale"></div>
+      </div>
+    </div>
+  </main>
+
+  <div id="duel-log" aria-live="polite"></div>
+
+  <!-- Player side -->
+  <section id="player-zone" aria-label="Your hand">
+    <div class="side-info">
+      <div class="portrait you-portrait" title="You">Y</div>
+      <div class="side-text">
+        <div class="side-name">You <span class="side-tag">the Ember Court</span></div>
+        <div class="side-stats">
+          <span class="stat influence">Influence <b id="you-hp">20</b></span>
+          <span class="stat mana">Embers <b id="you-mana">3</b></span>
+          <span class="stat deck">Deck <b id="you-deck">19</b></span>
+        </div>
+      </div>
+      <button id="end-turn" type="button">End Turn ⏎</button>
+    </div>
+    <div id="player-hand" class="hand" aria-label="Your hand"></div>
+    <div id="hand-hint">Click a card, then click a lane — or press 1–7 to pick a card, 1–3 for a lane, Enter to end turn.</div>
+  </section>
+
+  <!-- Title screen -->
+  <div id="title-screen" class="overlay">
+    <div class="title-card">
+      <div class="title-glyphs">
+        <span class="lane-glyph big" data-glyph="ember"></span>
+        <span class="lane-glyph big" data-glyph="tide"></span>
+        <span class="lane-glyph big" data-glyph="gale"></span>
+      </div>
+      <h1>EMBER COURT</h1>
+      <p class="tagline">A card duel of wits — outplay Duchess Vex across three lanes.</p>
+      <p class="rules-blurb">
+        Each turn you gain embers and draw a card. Play cards into the
+        <b class="c-ember">Ember</b>, <b class="c-tide">Tide</b> or <b class="c-gale">Gale</b> lane.
+        When the round ends, the stronger side of each lane wins it and deals
+        the difference as damage. Two cards of one element in a lane resonate:
+        each gains +1 power. Reduce the rival court to 0 influence first.
+      </p>
+      <button id="start-button" type="button">Take Your Seat</button>
+      <p class="title-foot">Keyboard: 1–7 pick a card · 1–3 pick a lane · Enter ends the turn</p>
+    </div>
+  </div>
+
+  <!-- End screens -->
+  <div id="end-screen" class="overlay hidden">
+    <div class="title-card end-card">
+      <h1 id="end-title">Victory</h1>
+      <p id="end-text" class="tagline"></p>
+      <p id="end-score" class="end-score"></p>
+      <button id="again-button" type="button">Duel Again</button>
+    </div>
+  </div>
+
+  <div id="confetti" aria-hidden="true"></div>
+</div>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
